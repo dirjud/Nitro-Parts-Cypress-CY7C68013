@@ -1,0 +1,14 @@
+Cy7C68013 Firmware.
+
+Simple starting firmware for Nitro boards that use the FX2 and USB drivers for
+the Nitrogen Data Acquisition System.
+
+To start your own project, make your own firmware directory and copy the
+Makefile from the firmware directory here to your directory.  Then, customize
+the path to the sources to point back to these sources.  If you want to modify
+these sources, copy them local and adjust your Makefile accordingly.
+
+Change the FX2LIBDIR variable at the top of the Makefile to point back here 
+correctly.
+
+Change the VID/PID accordingly for your project.
