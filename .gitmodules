@@ -1,0 +1,3 @@
+[submodule "lib/fx2lib"]
+	path = lib/fx2lib
+	url = git@github.com:ubixum/fx2lib.git
