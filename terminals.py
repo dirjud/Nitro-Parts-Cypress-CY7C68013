@@ -15,7 +15,22 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
+
+import nitro
 from nitro import DeviceInterface, Terminal, Register, SubReg
+
+prom_di = nitro.load_di ( "Microchip/M24XX/M24XX.xml" )
+fx2_prom_term = prom_di['M24XX'].clone()
+fx2_prom_term.name = 'FX2_PROM'
+fx2_prom_term.add_child ( 
+    Register ( 
+        name='serial',
+        addr=0xffff-8, # place serial number at last 10 bytes of eeprom
+        comment="Location of serial number stored on eeprom.",
+        mode="write",
+        width=8, # 8 bytes (str type not implemented yet)
+        array=8) )
+
 
 di=DeviceInterface(
     name="Cy7C68013",
@@ -360,6 +375,7 @@ di=DeviceInterface(
                          ),
                 ],
              ),
+             fx2_prom_term
      ]
 )
 

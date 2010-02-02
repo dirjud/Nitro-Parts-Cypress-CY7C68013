@@ -2,7 +2,7 @@ FX2LIBDIR = ../lib/fx2lib
 
 # possible env flags
 # -D DEBUG_FIRMWARE - enable stdio & printf on sio-0 (57600 buad)
-SDCCFLAGS := $(SDCCFLAGS)
+SDCCFLAGS := $(SDCCFLAGS) -I../../../Microchip/M24XX/fx2 -I.
 
 ###
 # dscr is under 200 bytes currently
@@ -21,7 +21,8 @@ SOURCES = firmware.c \
           dummy.c \
 		  main.c \
 		  handlers.c \
-		  fx2term.c
+		  fx2term.c \
+		  ../../../Microchip/M24XX/fx2/m24xx.c
 A51_SOURCES = dscr.a51 fx2_sfr.a51
 
 include $(FX2LIBDIR)/lib/fx2.mk

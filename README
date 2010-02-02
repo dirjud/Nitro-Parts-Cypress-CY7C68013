@@ -12,3 +12,9 @@ Change the FX2LIBDIR variable at the top of the Makefile to point back here
 correctly.
 
 Change the VID/PID accordingly for your project.
+
+Change the SDCCFLAGS to include appropriate directories for the handlers you
+want to use in your firmware.
+
+Customize your own handlers.c to include additional handlers for the board 
+you are building.

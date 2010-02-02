@@ -43,7 +43,5 @@ void reset_endpoints();
 extern volatile xdata WORD in_packet_max;
 extern volatile bit new_vc_cmd;
 
-#define PROM_ADDR 0x51 // prom for serial number
-#define PROM_SERIAL_OFFSET 0xff9b // 0xffff-100 = last 100 bytes of the 16k prom
 
 

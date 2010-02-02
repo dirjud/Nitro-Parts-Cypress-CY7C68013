@@ -26,6 +26,7 @@
 
 #include "dummy.h"
 #include "fx2term.h"
+#include <m24xx.h>
 
 
 io_handler code io_handlers[] = {
@@ -34,5 +35,6 @@ io_handler code io_handlers[] = {
 #endif
  {TERM_FX2, get_fx2, set_fx2, 0, 0, 0},
  {TERM_FX2_SFR, get_fx2_sfr, set_fx2_sfr, 0, 0, 0},
+ {TERM_FX2_PROM, m24xx_read_handler, m24xx_write_handler, 0, 0, 0},
  {0, 0, 0, 0, 0, 0}
 };
