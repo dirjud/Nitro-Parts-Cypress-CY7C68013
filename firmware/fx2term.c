@@ -18,7 +18,7 @@
 #include <fx2regs.h>
 #include "firmware.h"
 #include <delay.h>
-#include "terminals.h"
+#include <terminals.h>
 #include "handlers.h"
 
 extern code WORD dev_dscr; // the device descriptor.
