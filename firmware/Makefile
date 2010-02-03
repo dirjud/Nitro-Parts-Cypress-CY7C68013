@@ -1,3 +1,4 @@
+FX2DIR    = .
 FX2LIBDIR = ../lib/fx2lib
 
 # possible env flags
@@ -15,15 +16,16 @@ SDCCFLAGS := $(SDCCFLAGS) -I../../../Microchip/M24XX/fx2 -I.
 ###
 
 BASENAME = firmware
-DEPS = terminals.h vidpid.inc
+DEPS = terminals.h vidpid.asm
 
-SOURCES = firmware.c \
-          dummy.c \
-		  main.c \
-		  handlers.c \
-		  fx2term.c \
-		  ../../../Microchip/M24XX/fx2/m24xx.c
-A51_SOURCES = dscr.a51 fx2_sfr.a51
+SOURCES = $(FX2DIR)/firmware.c \
+          $(FX2DIR)/dummy.c \
+	  $(FX2DIR)/main.c \
+	  $(FX2DIR)/handlers.c \
+	  $(FX2DIR)/fx2term.c \
+	  ../../../Microchip/M24XX/fx2/m24xx.c
+
+A51_SOURCES = $(FX2DIR)/dscr.a51 $(FX2DIR)/fx2_sfr.a51
 
 include $(FX2LIBDIR)/lib/fx2.mk
 
@@ -33,6 +35,6 @@ PID=0x8613
 terminals.h: ../terminals.py
 	di --header terminals.h $<
 
-vidpid.inc:	
-	echo "VID=$(VID)" > vidpid.inc
-	echo "PID=$(PID)" >> vidpid.inc
+vidpid.asm: Makefile
+	echo "VID=$(VID)" >  vidpid.asm
+	echo "PID=$(PID)" >> vidpid.asm
