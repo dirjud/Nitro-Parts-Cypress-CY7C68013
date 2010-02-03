@@ -17,5 +17,9 @@
  **/
 #include <fx2types.h>
 
+// These are generic i2c handlers for various address and data widths.
+// The name of the function indicates the number of address and data bits
+// the given function supports.
+
 void i2c_a8_d8_get(WORD len);
 BOOL i2c_a8_d8_set();
