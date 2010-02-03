@@ -20,7 +20,7 @@
 ; change however you want but leave 
 ; the descriptor pointers so the setupdat.c file works right
  
-.include "vidpid.inc"
+.include "vidpid.asm"
 
 .module DEV_DSCR 
 
