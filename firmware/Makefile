@@ -16,7 +16,7 @@ SDCCFLAGS := $(SDCCFLAGS) -I../../../Microchip/M24XX/fx2 -I.
 ###
 
 BASENAME = firmware
-DEPS = terminals.h vidpid.asm
+DEPS = terminals.h build/vidpid.asm
 
 SOURCES = $(FX2DIR)/firmware.c \
           $(FX2DIR)/dummy.c \
@@ -35,6 +35,6 @@ PID=0x8613
 terminals.h: ../terminals.py
 	di --header terminals.h $<
 
-vidpid.asm: Makefile
-	echo "VID=$(VID)" >  vidpid.asm
-	echo "PID=$(PID)" >> vidpid.asm
+build/vidpid.asm: Makefile
+	echo "VID=$(VID)" >  $@ 
+	echo "PID=$(PID)" >> $@ 
