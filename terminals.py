@@ -24,7 +24,7 @@ fx2_prom_term = prom_di['M24XX'].clone()
 fx2_prom_term.name = 'FX2_PROM'
 fx2_prom_term.add_child ( 
     Register ( 
-        name='serial',
+        name='serialnum',
         addr=0xffff-8, # place serial number at last 10 bytes of eeprom
         comment="Location of serial number stored on eeprom.",
         mode="write",
