@@ -103,6 +103,7 @@ typedef struct {
 
 
 extern io_handler code io_handlers[];
+extern BOOL handlers_init();
 
 io_handler_read_func cur_read_handler;
 io_handler_write_func cur_write_handler;
@@ -128,8 +129,9 @@ BOOL handleRDWR () {
     memcpy ( &rdwr_data, EP0BUF, sizeof(rdwr_data_header) );
     rdwr_data.in_progress=TRUE;
    
-    EP2FIFOCFG =0 ; // don't autoout write data for anything but fpga
-
+    if (!handlers_init()) 
+        return FALSE;
+   
     reset_endpoints(); // clear any old data
 
     while (TRUE) {

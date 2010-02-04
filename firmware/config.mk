@@ -15,6 +15,7 @@ SOURCES = $(FX2DIR)firmware.c \
           $(FX2DIR)dummy.c \
 	  $(FX2DIR)main.c \
 	  $(FX2DIR)handlers.c \
+	  $(FX2DIR)handlers_init.c \
 	  $(FX2DIR)fx2term.c \
 	  $(FX2DIR)postinit.c \
 	  ../../../Microchip/M24XX/fx2/m24xx.c
