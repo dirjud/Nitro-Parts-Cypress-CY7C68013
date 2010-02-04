@@ -28,6 +28,7 @@ volatile bit dorenum=FALSE;
 
 
 extern code WORD str_serial;
+extern void post_init();
 
 xdata rdwr_data_t rdwr_data;
 
@@ -272,6 +273,8 @@ void main_init() {
  EP6AUTOINLENH=MSB(in_packet_max); SYNCDELAY();
  EP6AUTOINLENL=LSB(in_packet_max); SYNCDELAY();
 
+
+ post_init();
  printf ( "Initialization Done.\n" );
 
 }

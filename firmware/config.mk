@@ -16,6 +16,7 @@ SOURCES = $(FX2DIR)firmware.c \
 	  $(FX2DIR)main.c \
 	  $(FX2DIR)handlers.c \
 	  $(FX2DIR)fx2term.c \
+	  $(FX2DIR)postinit.c \
 	  ../../../Microchip/M24XX/fx2/m24xx.c
 
 A51_SOURCES = $(FX2DIR)/dscr.a51 $(FX2DIR)/fx2_sfr.a51
