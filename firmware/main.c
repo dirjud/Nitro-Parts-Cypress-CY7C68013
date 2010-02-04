@@ -132,8 +132,7 @@ BOOL handleRDWR () {
     reset_endpoints(); // clear any old data
 
     while (TRUE) {
-      if (io_handlers[cur].term_addr == 0) { return FALSE; }
-      if (io_handlers[cur].term_addr == rdwr_data.h.term_addr) {
+      if (!io_handlers[cur].term_addr || io_handlers[cur].term_addr == rdwr_data.h.term_addr) {
         printf ( "Found handlers for %d\n" , rdwr_data.h.term_addr );
         cur_read_handler = io_handlers[cur].read_handler; 
         cur_write_handler = io_handlers[cur].write_handler;
@@ -145,10 +144,10 @@ BOOL handleRDWR () {
       ++cur;
     }
     if (cur_init_handler) {
-        cur_init_handler();
+        return cur_init_handler();
     }
      
-    return TRUE;
+    return cur_read_handler != NULL && cur_write_handler != NULL;
 }
 
 
@@ -299,7 +298,7 @@ void send_ack_packet() {
 void main_loop() {
 
  // data to read from a terminal?
- if ( rdwr_data.in_progress && !(rdwr_data.h.command & bmSETWRITE)) {
+ if ( rdwr_data.in_progress && !(rdwr_data.h.command & bmSETWRITE) && !rdwr_data.autocommit) {
     xdata DWORD readlen = rdwr_data.h.transfer_length - rdwr_data.bytes_read;
     xdata WORD this_read = readlen > in_packet_max ? in_packet_max : readlen;
     if (this_read>0 && !(EP2468STAT & bmEP6FULL)) { 
@@ -332,7 +331,7 @@ void main_loop() {
  
  // received data to write to a terminal
  
- if (!(EP2468STAT & bmEP2EMPTY)) {
+ if (!(EP2468STAT & bmEP2EMPTY) && !rdwr_data.autocommit) {
 
      if ( !(rdwr_data.h.command & bmSETWRITE) ) {
         OUTPKTEND = 0x82;

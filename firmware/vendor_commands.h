@@ -111,6 +111,15 @@ typedef struct {
    * more IN data.
    **/
   uint8 aborted;
+
+  /**
+   * If this variable is set by an init handler, the main loop of
+   * the firmware will not attempt to call any handlers.  This is 
+   * specifically for the case when the packets are autocommit via 
+   * either slave fifo or gpif.  If autocommit is used, there is
+   * no point in defining a read or write handler for the terminal.
+   **/
+  uint8 autocommit;
 } 
 #ifdef __GNUG__
  __attribute__((__packed__))

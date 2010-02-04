@@ -72,9 +72,15 @@ typedef BOOL (*io_handler_write_func)();
 
 /**
  * Optional code to be run before a read/write transaction.  function can be
- * NULL in read/write structure.
+ * NULL in read/write structure.  If this function is defined for a handler,
+ * and it returns false, the RDWR setup will fail and the the data transfer
+ * is not attempted.
+ *
+ * Example: 
+ *  case: init handler is connected to device that is not configured properly
+ *  result: return false to data read/write is not attempted to device.  
  **/
-typedef void (*io_handler_init_func)();
+typedef BOOL (*io_handler_init_func)();
 
 /**
  * After a transaction is finished, the ack is sent back to the host.  This

@@ -19,6 +19,7 @@
 #ifndef FX2TERM_H
 #define FX2TERM_H
 
+#include <fx2types.h>
 
 /**
  * io_handler for getting fx2 registers
