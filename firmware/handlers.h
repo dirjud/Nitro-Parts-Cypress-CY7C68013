@@ -71,7 +71,7 @@ typedef BOOL (*io_handler_write_func)();
 
 
 /**
- * Optional code to be run before a read/write transaction.  function can be
+ * Optional code to be run before a read/write transaction.  Function can be
  * NULL in read/write structure.  If this function is defined for a handler,
  * and it returns false, the RDWR setup will fail and the the data transfer
  * is not attempted.
@@ -81,6 +81,20 @@ typedef BOOL (*io_handler_write_func)();
  *  result: return false to data read/write is not attempted to device.  
  **/
 typedef BOOL (*io_handler_init_func)();
+
+/**
+ * Optional code to run after a read/write transaction.  This function should
+ * release any resources or if changes were made to the chip that could 
+ * affect operation of another terminal, those changes should be reverted.
+ *
+ * Function is not actually called until right before the next rdwr transaction
+ * is set to begin.
+ *
+ * Example:
+ *  case: FPGA terminal puts IFCONFIG into slave fifo mode.
+ *  result: this function should put it back out of SLAVE FIFO mode.
+ **/
+typedef void (*io_handler_uninit_func)();
 
 /**
  * After a transaction is finished, the ack is sent back to the host.  This
@@ -104,11 +118,12 @@ typedef WORD (*io_handler_chksum_func)();
  **/
 typedef struct {
  WORD term_addr;
+ io_handler_init_func init_handler;
  io_handler_read_func read_handler;
  io_handler_write_func write_handler;
- io_handler_init_func init_handler;
  io_handler_status_func status_handler;
  io_handler_chksum_func chksum_handler;
+ io_handler_uninit_func uninit_handler;
 } io_handler;
 
 

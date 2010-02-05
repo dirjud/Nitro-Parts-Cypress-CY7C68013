@@ -108,6 +108,7 @@ extern BOOL handlers_init();
 io_handler_read_func cur_read_handler;
 io_handler_write_func cur_write_handler;
 io_handler_init_func cur_init_handler;
+io_handler_uninit_func cur_uninit_handler=NULL; // this one might not be set before checking value.
 io_handler_status_func cur_status_handler;
 io_handler_chksum_func cur_chksum_handler;
 
@@ -129,8 +130,10 @@ BOOL handleRDWR () {
     memcpy ( &rdwr_data, EP0BUF, sizeof(rdwr_data_header) );
     rdwr_data.in_progress=TRUE;
    
-    if (!handlers_init()) 
-        return FALSE;
+    // clear out old transaction artifacts if necessary
+    if (cur_uninit_handler) {
+        cur_uninit_handler();
+    }
    
     reset_endpoints(); // clear any old data
 
@@ -140,6 +143,7 @@ BOOL handleRDWR () {
         cur_read_handler = io_handlers[cur].read_handler; 
         cur_write_handler = io_handlers[cur].write_handler;
         cur_init_handler = io_handlers[cur].init_handler;
+        cur_uninit_handler = io_handlers[cur].uninit_handler;
         cur_status_handler = io_handlers[cur].status_handler;
         cur_chksum_handler = io_handlers[cur].chksum_handler;
         break;

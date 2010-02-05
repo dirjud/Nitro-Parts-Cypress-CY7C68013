@@ -53,8 +53,8 @@ void get_fx2(WORD len) {
                EP6FIFOBUF[1] = DSCR_BYTE(DSCR_VER_OFFSET+1); 
                break;
            case FX2_VERSION:
-               EP6FIFOBUF[0] = LSB(FIRMWARE_VERSION);
-               EP6FIFOBUF[1] = MSB(FIRMWARE_VERSION);
+               EP6FIFOBUF[0] = LSB((WORD)FIRMWARE_VERSION);
+               EP6FIFOBUF[1] = MSB((WORD)FIRMWARE_VERSION);
                break;
                
            default:
