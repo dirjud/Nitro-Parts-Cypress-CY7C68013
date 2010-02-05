@@ -102,7 +102,6 @@ typedef struct {
 } vc_handler;
 
 
-extern io_handler code io_handlers[];
 extern BOOL handlers_init();
 
 io_handler_read_func cur_read_handler;

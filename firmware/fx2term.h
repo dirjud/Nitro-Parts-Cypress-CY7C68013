@@ -19,7 +19,7 @@
 #ifndef FX2TERM_H
 #define FX2TERM_H
 
-#include <fx2types.h>
+#include "handlers.h"
 
 /**
  * io_handler for getting fx2 registers
@@ -31,6 +31,8 @@ void get_fx2();
  **/
 BOOL set_fx2();
 
+#define DECLARE_FX2_HANDLER(term) \
+    DECLARE_HANDLER(term, 0, 0, get_fx2, set_fx2, 0, 0, 0)
 
 /**
  * Get the value from an FX2 SFR. 
@@ -41,5 +43,7 @@ void get_fx2_sfr();
  **/
 BOOL set_fx2_sfr();
 
+#define DECLARE_FX2SFR_HANDLER(term) \
+    DECLARE_HANDLER(term, 0, 0, get_fx2_sfr, set_fx2_sfr, 0, 0, 0)
 
 #endif

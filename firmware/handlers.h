@@ -136,6 +136,38 @@ typedef struct {
 } io_handler;
 
 
+/**
+ * Individual firmare must define an array of 
+ * handlers for the firmware to use when rdwr requests are received.
+ **/
+extern io_handler code io_handlers[];
+
+/**
+ * For ease, this macro can help add handlers.  This macro 
+ * is meant to be reused by handler macro definitions, easing creation of the io_handlers array. 
+ *
+ * Example:
+ *  In some_handler.h:
+ *      #define DECLARE_SOMEHANDLER(term) DECLARE_HANDLER(term, somehandler_boot, somehandler_init... etc)
+ *  In your handlers.c file:
+ *      io_handler code io_handlers[] = {
+ *          DECLARE_SOMEHANDLER,
+ *          DECLARE_ANOTHERHANDLER,... };
+ **/
+#define DECLARE_HANDLER(term, boot_func, init_func, read_func, write_func, status_func, chksum_func, uninit_func) \
+ {term, boot_func, init_func, read_func, write_func, status_func, chksum_func, uninit_func} 
+
+/**
+ *  io_handlers must be null terminated.  If you don't have an address 0 terminator
+ *  as the last handler, you can use the NULL handler
+ **/
+#define DECLARE_NULL_HANDLER \
+    DECLARE_HANDLER(0,0,0,0,0,0,0,0)
+
+/**
+ * rdwr_data is used to keep track of the progress of a read or write transaction.
+ * See \ref vendor_commands.h for details on it's members.
+ **/
 extern xdata rdwr_data_t rdwr_data;
 
 

@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  **/
-#include <fx2types.h>
+#include <handlers.h>
 
 // These are generic i2c handlers for various address and data widths.
 // The name of the function indicates the number of address and data bits
@@ -23,3 +23,6 @@
 
 void i2c_a8_d8_get(WORD len);
 BOOL i2c_a8_d8_set();
+
+#define DECLARE_I2C88_HANDLER(term) \
+    DECLARE_HANDLER(term,0,0,i2c_a8_d8_get,i2c_a8_d8_set,0,0,0)
