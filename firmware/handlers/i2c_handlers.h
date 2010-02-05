@@ -23,3 +23,6 @@
 
 void i2c_a8_d8_get(WORD len);
 BOOL i2c_a8_d8_set();
+
+void i2c_a8_d16_get(WORD len);
+BOOL i2c_a8_d16_set();
