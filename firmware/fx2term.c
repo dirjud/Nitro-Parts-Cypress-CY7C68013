@@ -18,23 +18,45 @@
 #include <fx2regs.h>
 #include "firmware.h"
 #include <delay.h>
-#include <terminals.h>
+#include "fx2_terminals.h"
+#include "firmwarever.h"
 #include "handlers.h"
 
 extern code WORD dev_dscr; // the device descriptor.
+#define DSCR_VID_OFFSET  8
+#define DSCR_PID_OFFSET 10
+#define DSCR_VER_OFFSET 12
+#define DSCR_BYTE(x) *((BYTE*)(&dev_dscr)+x)
+
 
 extern BYTE asm_get_fx2_sfr(BYTE);
 extern void asm_set_fx2_sfr(BYTE, BYTE);
+
+
+
 
 void get_fx2(WORD len) {
     printf ( "get_fx2, len: %d\n" , len );
     if ( len == 2 ) {
         EP6FIFOBUF[1] = 0; // since most of these are just one byte...
         switch ( rdwr_data.h.reg_addr ) {
-           case FX2_VERSION:
-               EP6FIFOBUF[0] = *((BYTE*)(&dev_dscr) + 12);
-               EP6FIFOBUF[1] = *((BYTE*)(&dev_dscr) + 13);
+           case FX2_USBVID:
+               EP6FIFOBUF[0] = DSCR_BYTE(DSCR_VID_OFFSET); 
+               EP6FIFOBUF[1] = DSCR_BYTE(DSCR_VID_OFFSET+1); 
                break;
+           case FX2_USBPID:
+               EP6FIFOBUF[0] = DSCR_BYTE(DSCR_PID_OFFSET); 
+               EP6FIFOBUF[1] = DSCR_BYTE(DSCR_PID_OFFSET+1); 
+               break;
+           case FX2_USBVER:
+               EP6FIFOBUF[0] = DSCR_BYTE(DSCR_VER_OFFSET); 
+               EP6FIFOBUF[1] = DSCR_BYTE(DSCR_VER_OFFSET+1); 
+               break;
+           case FX2_VERSION:
+               EP6FIFOBUF[0] = LSB(FIRMWARE_VERSION);
+               EP6FIFOBUF[1] = MSB(FIRMWARE_VERSION);
+               break;
+               
            default:
                if (rdwr_data.h.reg_addr >= 0xe600 && rdwr_data.h.reg_addr <= 0xfdff ) {
                    xdata BYTE* a = *((xdata BYTE**)&rdwr_data.h.reg_addr);

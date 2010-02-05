@@ -45,15 +45,25 @@ di=DeviceInterface(
             register_list = [
                 Register(name="version",
                          mode="read",
-                         addr=0,
-                         comment="FX2 firmware version number",
+                         comment="Application Firmware Version"
+                ),
+                Register(name="usbvid",
+                         mode="read",
+                         comment="USB Vendor ID" ),
+                Register(name="usbpid",
+                         mode="read",
+                         comment="USB Product ID" ),
+                Register(name="usbver",
+                         mode="read",
+                         comment="USB device descriptor information" ,
                          subregs=[ SubReg ( name="minor",
                                         width=8,
-                                        comment="FX2 firmware minor version." ),
-                                    SubReg ( name="major",
+                                        comment="Nitro protocol minor version." ),
+                                   SubReg ( name="major",
                                         width=8,
-                                        comment="FX2 firmware major version." )
-                                  ])]
+                                        comment="Nitro protocol major version." )
+                                  ] )
+             ]
         ),
 
         Terminal(

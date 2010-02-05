@@ -20,7 +20,7 @@
 
 #include "firmware.h"
 #include "vendor_commands.h"
-#include <terminals.h>
+#include "fx2_terminals.h"
 #include "handlers.h"
 #include "fx2term.h"
 
