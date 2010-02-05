@@ -59,3 +59,39 @@ BOOL i2c_a8_d8_set () {
   rdwr_data.aborted = FALSE;
   return TRUE;
 }
+
+
+
+void i2c_a8_d16_get(WORD len) {
+  BYTE buf[1];
+  buf[0] = LSB(rdwr_data.h.reg_addr);
+
+  // First set the address to read from
+  if(!i2c_write(rdwr_data.h.term_addr, 1, buf, 0, NULL)) { 
+    printf("I2C addr write FAILED\n");
+    rdwr_data.aborted = TRUE;
+    return;
+  }
+
+  // Now read all the bytes
+  if(!i2c_read(rdwr_data.h.term_addr, len, EP6FIFOBUF)) {
+    printf("I2C read Failed\n");
+    rdwr_data.aborted = TRUE;
+    return;
+  }
+
+  rdwr_data.aborted = FALSE;
+  rdwr_data.bytes_avail = len;
+  
+}
+
+BOOL i2c_a8_d16_set () {
+    BYTE buf[1];
+
+    buf[0] = LSB(rdwr_data.h.reg_addr);
+    if(!i2c_write(rdwr_data.h.term_addr, 1, buf, rdwr_data.bytes_avail, EP2FIFOBUF)) { 
+      rdwr_data.aborted = TRUE;
+    }
+    rdwr_data.aborted = FALSE;
+    return TRUE;
+}

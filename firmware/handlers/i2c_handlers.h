@@ -26,3 +26,10 @@ BOOL i2c_a8_d8_set();
 
 #define DECLARE_I2C88_HANDLER(term) \
     DECLARE_HANDLER(term,0,0,i2c_a8_d8_get,i2c_a8_d8_set,0,0,0)
+
+void i2c_a8_d16_get(WORD len);
+BOOL i2c_a8_d16_set();
+
+#define DECLARE_I2C816_HANDLER(term) \
+    DECLARE_HANDLER(term,0,0,i2c_a8_d16_get,i2c_a8_d16_set,0,0,0)
+
