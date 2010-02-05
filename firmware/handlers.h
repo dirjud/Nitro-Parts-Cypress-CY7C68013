@@ -37,6 +37,14 @@
  * reg_addr each time a byte is written for instance.
  **/
 
+/**
+ * boot handlers: void boot(WORD term_addr);
+ * boot functions from the io_handlers struct are iterated at boot time.  If a
+ * handler needs to do some initialazion 1 time, this is the function to use.  
+ * It can be NULL otherwise.  Use the io_handler_init_func to initialize a
+ * device for reads/writes at the beginning of each transaction.
+ **/
+typedef void (*io_handler_boot_func)(WORD);
 
 /**
  *
@@ -118,6 +126,7 @@ typedef WORD (*io_handler_chksum_func)();
  **/
 typedef struct {
  WORD term_addr;
+ io_handler_boot_func boot_handler;
  io_handler_init_func init_handler;
  io_handler_read_func read_handler;
  io_handler_write_func write_handler;

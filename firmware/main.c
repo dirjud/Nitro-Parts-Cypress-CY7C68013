@@ -28,7 +28,7 @@ volatile bit dorenum=FALSE;
 
 
 extern code WORD str_serial;
-extern void post_init();
+extern void on_boot();
 
 xdata rdwr_data_t rdwr_data;
 
@@ -243,13 +243,16 @@ BOOL handle_vendorcommand(BYTE cmd) {
 
 }
 
+io_handler_boot_func boot_func;
 
 void main_init() {
+ BYTE c;
 
  printf ( "Someone Called Init\n" );
  CPUCS &= ~bmCLKOE; // don't drive clkout;
+ I2CTL |= bm400KHZ; 
  REVCTL=3;
- IFCONFIG=0xE0;
+ IFCONFIG=0xC0; // internal, 48mhz clk, don't drive default.
  
  // interrupts
  ENABLE_SUTOK(); 
@@ -278,7 +281,17 @@ void main_init() {
  EP6AUTOINLENL=LSB(in_packet_max); SYNCDELAY();
 
 
- post_init();
+ // any custom boot firmware boot function
+ on_boot();
+
+ // any custom handler boot function
+ c=0;
+ while (TRUE) {
+   boot_func = io_handlers[c].boot_handler; 
+   if (boot_func) boot_func(io_handlers[c].term_addr);
+   if (!io_handlers[c++].term_addr) break;
+ }
+
  printf ( "Initialization Done.\n" );
 
 }

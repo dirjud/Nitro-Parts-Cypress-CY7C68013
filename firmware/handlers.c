@@ -30,11 +30,8 @@
 
 
 io_handler code io_handlers[] = {
-#ifdef DEBUG_FIRMWARE
- {TERM_DUMMY, 0, dummy_reader, dummy_writer, 0, 0, 0}, 
-#endif
- {TERM_FX2, 0, get_fx2, set_fx2, 0, 0, 0},
- {TERM_FX2_SFR, 0, get_fx2_sfr, set_fx2_sfr, 0, 0, 0},
- {TERM_FX2_PROM, 0, m24xx_read_handler, m24xx_write_handler, 0, 0, 0},
- {0, 0, 0, 0, 0, 0, 0}
+ {TERM_FX2, 0, 0, get_fx2, set_fx2, 0, 0, 0},
+ {TERM_FX2_SFR, 0, 0, get_fx2_sfr, set_fx2_sfr, 0, 0, 0},
+ {TERM_FX2_PROM, 0, 0, m24xx_read_handler, m24xx_write_handler, 0, 0, 0},
+ {0, 0, 0, 0, 0, 0, 0, 0}
 };

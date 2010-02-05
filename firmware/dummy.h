@@ -15,10 +15,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  **/
+
+/**
+ * dummy reader and writer are placeholders for terminals that can only read or only write.
+ * If your terminal can only read, you would put dummy_writer in place of an otherwise
+ * NULL value for the writer.
+ **/
 #ifndef DUMMY_TERMINALS_H
 #define DUMMY_TERMINALS_H
 
-#include "handlers.h" 
+#include <fx2types.h>
 
 void dummy_reader(WORD len);
 BOOL dummy_writer();
