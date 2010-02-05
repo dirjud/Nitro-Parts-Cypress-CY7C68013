@@ -242,12 +242,10 @@ BOOL handle_vendorcommand(BYTE cmd) {
 
 void main_init() {
 
+ printf ( "Someone Called Init\n" );
  CPUCS &= ~bmCLKOE; // don't drive clkout;
  REVCTL=3;
-
-
- printf ( "Someone Called Init\n" );
- IFCONFIG=0xF0;
+ IFCONFIG=0xE0;
  
  // interrupts
  ENABLE_SUTOK(); 
