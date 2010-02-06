@@ -1,6 +1,7 @@
-
 import nitro
 from nitro_parts.Microchip.M24XX import program_fx2_prom 
+import logging
+log=logging.getLogger(__name__)
 
 def program_fx2(dev, filename):
     """
