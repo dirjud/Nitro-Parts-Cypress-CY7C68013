@@ -1,7 +1,50 @@
+import time
 import nitro
 from nitro_parts.Microchip.M24XX import program_fx2_prom 
 import logging
 log=logging.getLogger(__name__)
+
+
+def get_dev(di_file="Cypress/CY7C68013/CY7C68013.xml", serial_num=None, bus_addr=None, VID=0x1fe1, PID=0x8613, timeout=10):
+    """Opens a device and loads the DI file. If a serial_num is
+       provided, this opens that device. You can also specify the VID
+       and PID. This will wait until 'timeout' seconds for a device to
+       connect."""
+
+    dev = nitro.USBDevice(VID, PID)
+    
+    time0 = time.time()
+    while time0+timeout > time.time():
+        try:
+            if not(bus_addr is None):
+                dev.open_by_address(bus_addr)
+            elif not(serial_num is None):
+                dev.open_by_serial(serial_num)
+            else:
+                dev.open()
+            break
+        except nitro.Exception:
+            if not(bus_addr is None):
+                log.info("Waiting for device with VID=0x%x PID=0x%x BUS_ADDR=%d to connect" % (VID,PID,bus_addr))
+            elif not(serial_num is None):
+                log.info("Waiting for device with VID=0x%x PID=0x%x SERIAL_NUM=%s to connect" % (VID,PID,serial_num))
+            else:
+                log.info("Waiting for device with VID=0x%x PID=0x%x to connect" % (VID,PID))
+            time.sleep(1)
+                
+    if not(dev.is_open()):
+        raise nitro.Exception("Could not open 0x%x:0x%x device" % (VID, PID))
+    log.info("Opened 0x%x:0x%x device with serial number %s" % (VID, PID, dev.get_serial()))
+
+    init_dev(dev, di_file)
+
+    return dev
+
+def init_dev(dev, di_file="Cypress/CY7C68013/CY7C68013.xml"):
+    """Initializes the device with the di files."""
+
+    di = nitro.load_di(di_file)
+    dev.set_di(di)
 
 def program_fx2(dev, filename):
     """

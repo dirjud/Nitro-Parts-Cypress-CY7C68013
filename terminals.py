@@ -25,11 +25,11 @@ fx2_prom_term.name = 'FX2_PROM'
 fx2_prom_term.add_child ( 
     Register ( 
         name='serialnum',
-        addr=0xffff-8, # place serial number at last 10 bytes of eeprom
+        addr=0x10000-16, # place serial number at last 16 bytes of eeprom (stored as unicode (16 bit) on prom for device descriptor compat.
         comment="Location of serial number stored on eeprom.",
         mode="write",
-        width=8, # 8 bytes (str type not implemented yet)
-        array=8) )
+        width=16, # unicode characters 
+        array=8) ) # 8 characters (str type not implemented yet)
 
 
 di=DeviceInterface(

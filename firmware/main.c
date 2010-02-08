@@ -20,7 +20,7 @@
 
 #include "firmware.h"
 #include "vendor_commands.h"
-#include "fx2_terminals.h"
+#include <terminals.h> // only need this for prom serialnum, but it should come from project terminals not local fx2_terminals.h
 #include "handlers.h"
 #include "fx2term.h"
 
@@ -186,8 +186,8 @@ BOOL handle_serial () {
                 
             buf[1]=0;
             for (c=0;c<8;++c) {
-                i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0+c*2);
-                i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0+c*2);
+                i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0+c*2);
+                i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0+c*2);
                 buf[0] = EP0BUF[c];
                 i2c_write ( TERM_FX2_PROM, 2, i2c_addr_buf, 2, buf); 
             }
@@ -196,8 +196,8 @@ BOOL handle_serial () {
             while ((EP0CS & bmEPBUSY) && !new_vc_cmd); 
             if (new_vc_cmd) return FALSE;
             for (c=0;c<8;++c) {
-                i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0+c*2);
-                i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0+c*2);
+                i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0+c*2);
+                i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0+c*2);
                 i2c_write ( TERM_FX2_PROM, 2, i2c_addr_buf, 0, NULL );
                 i2c_read ( TERM_FX2_PROM, 1, EP0BUF+c );
             }
@@ -258,8 +258,8 @@ void main_init() {
 
  // initialize the device serial number
  if (EEPROM_TWO_BYTE) { // this will fail anyway if a two byte prom wasn't detected
-    i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0);
-    i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0);
+    i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0);
+    i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0);
     i2c_write( TERM_FX2_PROM, 2, i2c_addr_buf, 0, NULL );
     i2c_read ( TERM_FX2_PROM, 16, (xdata BYTE*)&str_serial + 2 ); 
  }
