@@ -44,4 +44,5 @@ extern volatile xdata WORD in_packet_max;
 extern volatile bit new_vc_cmd;
 
 
-
+#define HISPD_EP6_SIZE 512
+#define FULLSPD_EP6_SIZE 64

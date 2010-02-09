@@ -115,6 +115,7 @@ BOOL handleRDWR () {
     BYTE cur=0; // counter
 
     printf ( "Received RDWR VC\n" );
+    printf ( "in_packet_max: %d hs %d\n" , in_packet_max, HISPEED );
 
     if (SETUP_TYPE != 0x40) return FALSE; 
     if (SETUP_LENGTH() != sizeof(rdwr_data_header)) return FALSE;
@@ -275,10 +276,9 @@ void main_init() {
  EP6CFG = 0xE0; SYNCDELAY();  // 11100000 VALID, IN , BULK, 512 BYTES, QUAD 
 
  EP6FIFOCFG = 0; SYNCDELAY(); // zero to one transition just in case
- EP6FIFOCFG = bmWORDWIDE|bmAUTOIN; SYNCDELAY();
- EP6AUTOINLENH=MSB(in_packet_max); SYNCDELAY();
- EP6AUTOINLENL=LSB(in_packet_max); SYNCDELAY();
 
+ // give in_packet_max a default
+ in_packet_max = HISPEED ? HISPD_EP6_SIZE : FULLSPD_EP6_SIZE;
 
  // any custom boot firmware boot function
  on_boot();

@@ -114,17 +114,15 @@ void sudav_isr() interrupt SUDAV_ISR {
  CLEAR_SUDAV();
 }
 void usbreset_isr() interrupt USBRESET_ISR {
- in_packet_max=64;
+ in_packet_max=FULLSPD_EP6_SIZE;
  handle_hispeed(FALSE);
- EP6AUTOINLENH=MSB(in_packet_max); SYNCDELAY();
- EP6AUTOINLENL=LSB(in_packet_max); SYNCDELAY();
+ printf ( "usb reset\n" );
  CLEAR_USBRESET();
 }
 void hispeed_isr() interrupt HISPEED_ISR {
- in_packet_max=512;
+ in_packet_max=HISPD_EP6_SIZE;
  handle_hispeed(TRUE);
- EP6AUTOINLENH=MSB(in_packet_max); SYNCDELAY();
- EP6AUTOINLENL=LSB(in_packet_max); SYNCDELAY();
+ printf ( "usb_hispeed\n" );
  CLEAR_HISPEED();
 }
 
