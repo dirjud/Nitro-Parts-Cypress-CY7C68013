@@ -63,7 +63,11 @@ void main() {
  EA=1;
 
 // use RENUMERATE_UNCOND() if need to change device descriptor.
+#ifdef RENUM_UNCOND 
+ RENUMERATE_UNCOND(); 
+#else
  RENUMERATE();
+#endif
  
  while(TRUE) {
 
