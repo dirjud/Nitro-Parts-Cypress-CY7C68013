@@ -110,17 +110,22 @@ void resume_isr() interrupt RESUME_ISR {
 }
   
 void sudav_isr() interrupt SUDAV_ISR {
- dosud=TRUE;
  // if the vendor command is a custom vendor
  // command for our firmware, make sure we
  // cancel any pending reads/writes etc, to 
  // avoid possible lock situations.
  // let all other vendor commands fall through.
- if ((SETUPDAT[1] & 0xf0) == 0xb0) {
-  new_vc_cmd=1;
-  cancel_i2c_trans=TRUE;
- }
  printf ( "SUDAV\n" );
+ if (SETUPDAT[1] == VC_RDWR_DATA) {
+  new_vc_cmd=1; // deprecated, needs to use aborted
+  cancel_i2c_trans=TRUE; // deprecated, needs to move to i2c interrupts
+  rdwr_data.aborted=TRUE;
+  dosud=TRUE;
+ } else if (rdwr_data.in_progress && !rdwr_data.auto_commit) {
+   handle_setupdata();
+ } else {
+    dusud=TRUE;
+ }
  CLEAR_SUDAV();
 }
 void usbreset_isr() interrupt USBRESET_ISR {
