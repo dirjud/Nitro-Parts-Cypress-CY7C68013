@@ -51,12 +51,11 @@ void reset_endpoints() {
      printf ( "Reset Endpoints.\n" );
 }
 
-volatile xdata BYTE interface=0;
-volatile xdata BYTE alt=0; // alt interface
 
 // set *alt_ifc to the current alt interface for ifc
-BOOL handle_get_interface(BYTE ifc, BYTE* alt_ifc) {
- *alt_ifc=alt;
+#pragma save
+#pragma disable_warning 85 // unused variables we don't care about
+BOOL handle_get_interface(BYTE i, BYTE* a) {
  return TRUE;
 }
 // return TRUE if you set the interface requested
@@ -67,8 +66,6 @@ BOOL handle_set_interface(BYTE ifc,BYTE alt_ifc) {
     RESETTOGGLE(0x02); 
     RESETTOGGLE(0X86); 
     reset_endpoints();
- interface=ifc;
- alt=alt_ifc;
  return TRUE;
 }
 
@@ -87,6 +84,7 @@ BOOL handle_set_configuration(BYTE cfg) {
  //config=cfg;
  return TRUE;
 }
+#pragma restore // back to caring about the unused variables
 
 
 //******************* VENDOR COMMAND HANDLERS **************************
@@ -101,8 +99,6 @@ typedef struct {
  VCHandleFunc handleFunc;
 } vc_handler;
 
-
-extern BOOL handlers_init();
 
 io_handler_read_func cur_read_handler;
 io_handler_write_func cur_write_handler;
