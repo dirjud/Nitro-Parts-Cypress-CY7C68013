@@ -55,7 +55,9 @@ void reset_endpoints() {
 // set *alt_ifc to the current alt interface for ifc
 #pragma save
 #pragma disable_warning 85 // unused variables we don't care about
+xdata BYTE alt=0;
 BOOL handle_get_interface(BYTE i, BYTE* a) {
+ *a=alt;
  return TRUE;
 }
 // return TRUE if you set the interface requested
@@ -66,6 +68,7 @@ BOOL handle_set_interface(BYTE ifc,BYTE alt_ifc) {
     RESETTOGGLE(0x02); 
     RESETTOGGLE(0X86); 
     reset_endpoints();
+    alt=alt_ifc;
  return TRUE;
 }
 
@@ -100,15 +103,11 @@ typedef struct {
 } vc_handler;
 
 
-io_handler_read_func cur_read_handler;
-io_handler_write_func cur_write_handler;
-io_handler_init_func cur_init_handler;
-io_handler_uninit_func cur_uninit_handler=NULL; // this one might not be set before checking value.
-io_handler_status_func cur_status_handler;
-io_handler_chksum_func cur_chksum_handler;
+
+xdata BYTE cur_io_handler=0;
+io_handler_read_func cur_read_handler; // this one has a param and doesn't like not being re-entrant
 
 BOOL handleRDWR () { 
-    BYTE cur=0; // counter
 
     printf ( "Received RDWR VC\n" );
     printf ( "in_packet_max: %d hs %d\n" , in_packet_max, HISPEED );
@@ -127,30 +126,31 @@ BOOL handleRDWR () {
     rdwr_data.in_progress=TRUE;
    
     // clear out old transaction artifacts if necessary
-    if (cur_uninit_handler) {
-        cur_uninit_handler();
+    if (io_handlers[cur_io_handler].uninit_handler) {
+        io_handlers[cur_io_handler].uninit_handler();
     }
    
     reset_endpoints(); // clear any old data
 
+    cur_io_handler =0;    
     while (TRUE) {
-      if (!io_handlers[cur].term_addr || io_handlers[cur].term_addr == rdwr_data.h.term_addr) {
+      if (!io_handlers[cur_io_handler].term_addr || io_handlers[cur_io_handler].term_addr == rdwr_data.h.term_addr) {
         printf ( "Found handlers for %d\n" , rdwr_data.h.term_addr );
-        cur_read_handler = io_handlers[cur].read_handler; 
-        cur_write_handler = io_handlers[cur].write_handler;
-        cur_init_handler = io_handlers[cur].init_handler;
-        cur_uninit_handler = io_handlers[cur].uninit_handler;
-        cur_status_handler = io_handlers[cur].status_handler;
-        cur_chksum_handler = io_handlers[cur].chksum_handler;
+        cur_read_handler = io_handlers[cur_io_handler].read_handler; 
+//        *cur_write_handler = io_handlers[cur].write_handler;
+//        *cur_init_handler = io_handlers[cur].init_handler;
+//        *cur_uninit_handler = io_handlers[cur].uninit_handler;
+//        *cur_status_handler = io_handlers[cur].status_handler;
+//        *cur_chksum_handler = io_handlers[cur].chksum_handler;
         break;
       } 
-      ++cur;
+      ++cur_io_handler;
     }
-    if (cur_init_handler) {
-        return cur_init_handler();
+    if (io_handlers[cur_io_handler].init_handler) {
+        return io_handlers[cur_io_handler].init_handler();
     }
      
-    return cur_read_handler != NULL && cur_write_handler != NULL;
+    return cur_read_handler != NULL && io_handlers[cur_io_handler].write_handler != NULL;
 }
 
 
@@ -250,9 +250,6 @@ void main_init() {
  REVCTL=3;
  IFCONFIG=0xC0; // internal, 48mhz clk, don't drive default.
  
- // interrupts
- ENABLE_SUTOK(); 
-
  // initialize the device serial number
  if (EEPROM_TWO_BYTE) { // this will fail anyway if a two byte prom wasn't detected
     i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0);
@@ -294,8 +291,8 @@ void main_init() {
 void send_ack_packet() {
     WORD status=rdwr_data.aborted;
     WORD checksum=0;
-    if (cur_status_handler) status=cur_status_handler();
-    if (cur_chksum_handler) checksum=cur_chksum_handler();
+    if (io_handlers[cur_io_handler].status_handler) status=io_handlers[cur_io_handler].status_handler();
+    if (io_handlers[cur_io_handler].chksum_handler) checksum=io_handlers[cur_io_handler].chksum_handler();
     printf ("Transfer Status %d\n", status );
     EP6FIFOBUF[0] = 0x0f;
     EP6FIFOBUF[1] = 0xa5;
@@ -353,7 +350,7 @@ void main_loop() {
      } else {
         rdwr_data.bytes_avail = MAKEWORD ( EP2BCH, EP2BCL );
         //printf ( "Writing %d Bytes..\n", rdwr_data.bytes_avail );
-        if (rdwr_data.aborted || cur_write_handler ()) { 
+        if (rdwr_data.aborted || io_handlers[cur_io_handler].write_handler()) { 
          rdwr_data.bytes_written += rdwr_data.bytes_avail;
          OUTPKTEND = 0x82; 
         }
@@ -375,12 +372,4 @@ void main_loop() {
 
 }
 
-
-/********* Optional Interrupts ***************/
-void sutok_isr() interrupt SUTOK_ISR {
- new_vc_cmd=1;
- cancel_i2c_trans=TRUE;
- printf ( "sutok..\n" );
- CLEAR_SUTOK();
-}
 
