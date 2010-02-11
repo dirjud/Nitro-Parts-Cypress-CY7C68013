@@ -20,3 +20,6 @@ firmwarever.h: config.mk
 build/vidpid.asm: config.mk 
 	echo "VID=$(VID)" >  $@ 
 	echo "PID=$(PID)" >> $@ 
+
+load: $(BUILDDIR)/$(BASENAME).ihx
+	nitro -R $< -V $(VID) -P $(PID)

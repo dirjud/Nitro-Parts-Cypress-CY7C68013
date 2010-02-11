@@ -9,6 +9,3 @@ include nitrofx2.mk
 fx2_terminals.h: ../terminals.py
 	di --header $@ $<
 
-
-load: $(BUILDDIR)/$(BASENAME).ihx
-	nitro -R $< -V $(VID) -P $(PID)
