@@ -115,6 +115,11 @@ BOOL handleRDWR () {
     if (SETUP_TYPE != 0x40) return FALSE; 
     if (SETUP_LENGTH() != sizeof(rdwr_data_header)) return FALSE;
 
+    // clear out old transaction artifacts if necessary
+    if (io_handlers[cur_io_handler].uninit_handler) {
+        io_handlers[cur_io_handler].uninit_handler();
+    }
+
     // clear structure back to 0
     memset(&rdwr_data, 0, sizeof(rdwr_data));
 
@@ -125,10 +130,6 @@ BOOL handleRDWR () {
     memcpy ( &rdwr_data, EP0BUF, sizeof(rdwr_data_header) );
     rdwr_data.in_progress=TRUE;
    
-    // clear out old transaction artifacts if necessary
-    if (io_handlers[cur_io_handler].uninit_handler) {
-        io_handlers[cur_io_handler].uninit_handler();
-    }
    
     reset_endpoints(); // clear any old data
 
