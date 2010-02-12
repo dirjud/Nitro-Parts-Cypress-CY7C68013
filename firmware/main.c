@@ -27,7 +27,9 @@
 volatile bit dorenum=FALSE;
 
 
-extern code WORD str_serial;
+extern code WORD str_serial_addr;
+volatile WORD *str_serial = &str_serial_addr;
+
 extern void on_boot();
 
 xdata rdwr_data_t rdwr_data;
@@ -170,11 +172,9 @@ BOOL rdwr_stat( ) {
 
 }
 
-BOOL handle_serial () {
-    BYTE c;
-    BYTE buf[2];
-    if (SETUP_LENGTH() != 8) return FALSE;
 
+BOOL handle_serial () {
+    if (SETUP_LENGTH() != 16) return FALSE;
     switch ( SETUP_TYPE ) {
 
         case 0x40:
@@ -182,25 +182,17 @@ BOOL handle_serial () {
             while ((EP0CS & bmEPBUSY) && !new_vc_cmd ); // make sure the data came in ok.
             if (new_vc_cmd) return FALSE;
                 
-            buf[1]=0;
-            for (c=0;c<8;++c) {
-                i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0+c*2);
-                i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0+c*2);
-                buf[0] = EP0BUF[c];
-                i2c_write ( TERM_FX2_PROM, 2, i2c_addr_buf, 2, buf); 
-            }
+            i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0);
+            i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0);
+            i2c_write ( TERM_FX2_PROM, 2, i2c_addr_buf, 16, EP0BUF ); 
+            memcpy ( (xdata BYTE*)&str_serial_addr, EP0BUF, 16 );
             return TRUE;
        case 0xc0:
             while ((EP0CS & bmEPBUSY) && !new_vc_cmd); 
             if (new_vc_cmd) return FALSE;
-            for (c=0;c<8;++c) {
-                i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0+c*2);
-                i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0+c*2);
-                i2c_write ( TERM_FX2_PROM, 2, i2c_addr_buf, 0, NULL );
-                i2c_read ( TERM_FX2_PROM, 1, EP0BUF+c );
-            }
+            memcpy ( EP0BUF, (xdata BYTE*)str_serial, 16);
             EP0BCH=0; SYNCDELAY();
-            EP0BCL=8;
+            EP0BCL=16;
             return TRUE;
         default:
             return FALSE;
@@ -256,7 +248,8 @@ void main_init() {
     i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0);
     i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0);
     i2c_write( TERM_FX2_PROM, 2, i2c_addr_buf, 0, NULL );
-    i2c_read ( TERM_FX2_PROM, 16, (xdata BYTE*)&str_serial + 2 ); 
+    i2c_read ( TERM_FX2_PROM, 16, (xdata BYTE*)&str_serial_addr ); 
+    printf ( "Read Serial.\n" );
  }
 
  // other endpoints not valid

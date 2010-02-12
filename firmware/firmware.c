@@ -25,6 +25,8 @@
 #endif
 
 #include "firmware.h"
+#include "vendor_commands.h"
+#include "handlers.h"
 
 
 volatile bit dosud=FALSE;
@@ -116,15 +118,20 @@ void sudav_isr() interrupt SUDAV_ISR {
  // avoid possible lock situations.
  // let all other vendor commands fall through.
  printf ( "SUDAV\n" );
- if (SETUPDAT[1] == VC_RDWR_DATA) {
+ if (SETUPDAT[1] == VC_HI_RDWR || 
+    (SETUPDAT[1] == VC_SERIAL && SETUPDAT[0] == 0x40) // sets on serial are unsafe, gets are safe
+ ) {
   new_vc_cmd=1; // deprecated, needs to use aborted
   cancel_i2c_trans=TRUE; // deprecated, needs to move to i2c interrupts
   rdwr_data.aborted=TRUE;
   dosud=TRUE;
- } else if (rdwr_data.in_progress && !rdwr_data.auto_commit) {
+  printf ( "Unsafe\n" );
+ } else if (rdwr_data.in_progress && !rdwr_data.autocommit) {
+   printf ( "Handle in interrupt..\n" );
    handle_setupdata();
  } else {
-    dusud=TRUE;
+    printf ( "Safe\n" );
+    dosud=TRUE;
  }
  CLEAR_SUDAV();
 }

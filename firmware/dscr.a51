@@ -44,7 +44,7 @@ ENDPOINT_TYPE_ISO=1
 ENDPOINT_TYPE_BULK=2
 ENDPOINT_TYPE_INT=3
 
-    .globl	_dev_dscr, _dev_qual_dscr, _highspd_dscr, _fullspd_dscr, _dev_strings, _dev_strings_end, _str_serial
+    .globl	_dev_dscr, _dev_qual_dscr, _highspd_dscr, _fullspd_dscr, _dev_strings, _dev_strings_end, _str_serial_addr
 ; These need to be in code memory.  If
 ; they aren't you'll have to manully copy them somewhere
 ; in code memory otherwise SUDPTRH:L don't work right
@@ -253,9 +253,10 @@ _string2:
     .db 0;
 string2end:
 
-_str_serial:
-    .db string3end-_str_serial
+_string3:
+    .db string3end-_string3
     .db DSCR_STRING_TYPE
+_str_serial_addr:
     .ascii '0'
     .db 0
     .ascii '0'
