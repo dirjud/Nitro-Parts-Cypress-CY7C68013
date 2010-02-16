@@ -9,7 +9,10 @@ include $(FX2LIBDIR)/lib/fx2.mk
 
 FIRMWARE_VERSION?=1
 DSCR_ATTRS?=0x80 # default is bus powered with no wakeup
-DSCR_POWER?=0xfa # default is 500ma
+			     # bit 7=set to1, bit 6=self powered,
+				 # bit 5=remote wakeup
+				 # bit 4-0 set to 0
+DSCR_POWER?=0xfa # default is 500ma (2ma units)
 
 terminals.h: ../terminals.py
 	di --header terminals.h $<
