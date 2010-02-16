@@ -88,8 +88,8 @@ _highspd_dscr:
 	.db	1								 ; n interfaces
 	.db	1								 ; config number
 	.db	0								 ; config string
-	.db	0x80                             ; attrs = bus powered, no wakeup
-	.db	0xfa                             ; max power = 500ma
+	.db	DSCR_ATTRS                             ; attrs = bus powered, no wakeup
+	.db	DSCR_POWER                             ; max power
 highspd_dscr_end:
 
 ; all the interfaces next 
@@ -145,8 +145,8 @@ _fullspd_dscr:
 	.db	1								 ; n interfaces
 	.db	1								 ; config number
 	.db	0								 ; config string
-	.db	0x80                             ; attrs = bus powered, no wakeup
-	.db	0xfa                             ; max power = 500ma
+	.db	DSCR_ATTRS                             ; attrs = bus powered, no wakeup
+	.db	DSCR_POWER                             ; max power
 fullspd_dscr_end:
 
 ; all the interfaces next 
