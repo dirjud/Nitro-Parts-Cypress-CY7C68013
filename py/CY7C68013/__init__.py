@@ -36,7 +36,8 @@ def get_dev(di_file="Cypress/CY7C68013/CY7C68013.xml", serial_num=None, bus_addr
         raise nitro.Exception("Could not open 0x%x:0x%x device" % (VID, PID))
     log.info("Opened 0x%x:0x%x device with serial number %s" % (VID, PID, dev.get_serial()))
 
-    init_dev(dev, di_file)
+    if(di_file):
+        init_dev(dev, di_file)
 
     return dev
 
