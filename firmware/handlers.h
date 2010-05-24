@@ -50,11 +50,11 @@ typedef void (*io_handler_boot_func)(WORD);
  *
  * READ handlers: void read_handler(WORD length);
  *  length is the number of maximum number of bytes that can be read from the
- *  terminal/register into the read endpoint.  After reading bytes into the
- *  endpoint, rdwr_data.bytes_avail should contains the number of bytes in the 
- *  endpoint.  The endpoint is then committed with the corresponding byte count
- *  and available for the Host to read.  A read handler need not read all the 
- *  bytes into the endpoint.  Handlers should not block.  If not bytes are
+ *  terminal/register into the read endpoint (EP6FIFOBUF).  After reading bytes
+ *  into the endpoint, rdwr_data.bytes_avail should contains the number of bytes
+ *  in the endpoint.  The endpoint is then committed with the corresponding byte
+ *  count and available for the Host to read.  A read handler need not read all
+ *  the bytes into the endpoint.  Handlers should not block.  If no bytes are
  *  read, the 0 length packets are not committed.  Read handlers should NOT 
  *  commit the packets.
  *
@@ -66,7 +66,7 @@ typedef void (*io_handler_read_func)(WORD);
 
 /**
  * WRITE handlers: WORD write_handler():
- *  The number of bytes available in the write buffer are stored in
+ *  The number of bytes available in the write buffer (EP2FIFOBUF) are stored in
  *  rdwr_data.bytes_avail.  The write_handler must handle the available bytes
  *  without blocking. The handler can return FALSE instead of TRUE to allow
  *  another pass at the same data if the write call would block.
