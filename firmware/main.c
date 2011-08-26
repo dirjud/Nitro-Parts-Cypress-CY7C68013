@@ -24,19 +24,19 @@
 #include "handlers.h"
 #include "fx2term.h"
 
-volatile bit dorenum=FALSE;
+volatile __bit dorenum=FALSE;
 
 
-extern code WORD str_serial_addr;
+extern __code WORD str_serial_addr;
 volatile WORD *str_serial = &str_serial_addr;
 
 extern void on_boot();
 
-xdata rdwr_data_t rdwr_data;
+__xdata rdwr_data_t rdwr_data;
 
 
-volatile xdata WORD in_packet_max = 64; // max size for full speed usb (the default before hi-speed interrupt)
-xdata BYTE i2c_addr_buf[2]; // for reading/writing to the eeprom
+volatile __xdata WORD in_packet_max = 64; // max size for full speed usb (the default before hi-speed interrupt)
+__xdata BYTE i2c_addr_buf[2]; // for reading/writing to the eeprom
 
 
 void reset_endpoints() {
@@ -57,7 +57,7 @@ void reset_endpoints() {
 // set *alt_ifc to the current alt interface for ifc
 #pragma save
 #pragma disable_warning 85 // unused variables we don't care about
-xdata BYTE alt=0;
+__xdata BYTE alt=0;
 BOOL handle_get_interface(BYTE i, BYTE* a) {
  *a=alt;
  return TRUE;
@@ -106,7 +106,7 @@ typedef struct {
 
 
 
-xdata BYTE cur_io_handler=0;
+__xdata BYTE cur_io_handler=0;
 io_handler_read_func cur_read_handler; // this one has a param and doesn't like not being re-entrant
 
 BOOL handleRDWR () { 
@@ -185,12 +185,12 @@ BOOL handle_serial () {
             i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0);
             i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0);
             i2c_write ( TERM_FX2_PROM, 2, i2c_addr_buf, 16, EP0BUF ); 
-            memcpy ( (xdata BYTE*)&str_serial_addr, EP0BUF, 16 );
+            memcpy ( (__xdata BYTE*)&str_serial_addr, EP0BUF, 16 );
             return TRUE;
        case 0xc0:
             while ((EP0CS & bmEPBUSY) && !new_vc_cmd); 
             if (new_vc_cmd) return FALSE;
-            memcpy ( EP0BUF, (xdata BYTE*)str_serial, 16);
+            memcpy ( EP0BUF, (__xdata BYTE*)str_serial, 16);
             EP0BCH=0; SYNCDELAY();
             EP0BCL=16;
             return TRUE;
@@ -207,7 +207,7 @@ BOOL handle_renum() {
 }
 
 // last element of vc_handlers will have a handler w/ 0 for cmd
-vc_handler code vc_handlers[] = {
+vc_handler __code vc_handlers[] = {
 //    { VC_HI_REGVAL, handleGETSET },
     { VC_HI_RDWR, handleRDWR },
     { VC_RDWR_STAT, rdwr_stat },
@@ -217,7 +217,7 @@ vc_handler code vc_handlers[] = {
  };
 
 BOOL handle_vendorcommand(BYTE cmd) {
- xdata BYTE i=0;
+ __xdata BYTE i=0;
  //printf ( "setupdat[5] %02x setupdat[4] %02x\n", SETUPDAT[5], SETUPDAT[4] );
  while (TRUE) {
    if (vc_handlers[i].cmd == cmd) {
@@ -248,7 +248,7 @@ void main_init() {
     i2c_addr_buf[0] = MSB(FX2_PROM_SERIALNUM0_0);
     i2c_addr_buf[1] = LSB(FX2_PROM_SERIALNUM0_0);
     i2c_write( TERM_FX2_PROM, 2, i2c_addr_buf, 0, NULL );
-    i2c_read ( TERM_FX2_PROM, 16, (xdata BYTE*)&str_serial_addr ); 
+    i2c_read ( TERM_FX2_PROM, 16, (__xdata BYTE*)&str_serial_addr ); 
     printf ( "Read Serial.\n" );
  }
 
@@ -305,8 +305,8 @@ void main_loop() {
 
  // data to read from a terminal?
  if ( rdwr_data.in_progress && !(rdwr_data.h.command & bmSETWRITE) && !rdwr_data.autocommit) {
-    xdata DWORD readlen = rdwr_data.h.transfer_length - rdwr_data.bytes_read;
-    xdata WORD this_read = readlen > in_packet_max ? in_packet_max : readlen;
+    __xdata DWORD readlen = rdwr_data.h.transfer_length - rdwr_data.bytes_read;
+    __xdata WORD this_read = readlen > in_packet_max ? in_packet_max : readlen;
     if (this_read>0 && !(EP2468STAT & bmEP6FULL)) { 
         if (!rdwr_data.aborted) {
             cur_read_handler(this_read);

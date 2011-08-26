@@ -140,7 +140,7 @@ typedef struct {
  * Individual firmare must define an array of 
  * handlers for the firmware to use when rdwr requests are received.
  **/
-extern io_handler code io_handlers[];
+extern io_handler __code io_handlers[];
 
 /**
  * For ease, this macro can help add handlers.  This macro 
@@ -168,7 +168,7 @@ extern io_handler code io_handlers[];
  * rdwr_data is used to keep track of the progress of a read or write transaction.
  * See \ref vendor_commands.h for details on it's members.
  **/
-extern xdata rdwr_data_t rdwr_data;
+extern __xdata rdwr_data_t rdwr_data;
 
 
 #endif

@@ -22,7 +22,7 @@
 #include "firmwarever.h"
 #include "handlers.h"
 
-extern code WORD dev_dscr; // the device descriptor.
+extern __code WORD dev_dscr; // the device descriptor.
 #define DSCR_VID_OFFSET  8
 #define DSCR_PID_OFFSET 10
 #define DSCR_VER_OFFSET 12
@@ -59,7 +59,7 @@ void get_fx2(WORD len) {
                
            default:
                if (rdwr_data.h.reg_addr >= 0xe600 && rdwr_data.h.reg_addr <= 0xfdff ) {
-                   xdata BYTE* a = *((xdata BYTE**)&rdwr_data.h.reg_addr);
+                   __xdata BYTE* a = *((__xdata BYTE**)&rdwr_data.h.reg_addr);
                    printf ( "Get %04x a: %04x *a: %02x\n " , (WORD)rdwr_data.h.reg_addr, (WORD)a, *a );
                    EP6FIFOBUF[0] = *a;
                    break;
@@ -79,7 +79,7 @@ BOOL set_fx2() {
     if (rdwr_data.bytes_avail == 2) {
         if (rdwr_data.h.reg_addr >= 0xe600 && rdwr_data.h.reg_addr <= 0xfdff ) {
             WORD reg_addr = rdwr_data.h.reg_addr; // cast 31 bit to 16
-            xdata BYTE *a = *((xdata BYTE**)&rdwr_data.h.reg_addr);
+            __xdata BYTE *a = *((__xdata BYTE**)&rdwr_data.h.reg_addr);
             printf ( "Set %04x a: %04x *a: %02x\n " , (WORD)rdwr_data.h.reg_addr, (WORD)a, *a );
             *a = val;
         }

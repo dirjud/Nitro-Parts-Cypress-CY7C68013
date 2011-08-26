@@ -29,9 +29,9 @@
 #include "handlers.h"
 
 
-volatile bit dosud=FALSE;
-volatile bit dosuspend=FALSE;
-volatile bit new_vc_cmd;
+volatile __bit dosud=FALSE;
+volatile __bit dosuspend=FALSE;
+volatile __bit new_vc_cmd;
 
 // custom functions
 extern void main_loop();
@@ -107,11 +107,11 @@ void main() {
 
 } // end main
 
-void resume_isr() interrupt RESUME_ISR {
+void resume_isr() __interrupt RESUME_ISR {
  CLEAR_RESUME();
 }
   
-void sudav_isr() interrupt SUDAV_ISR {
+void sudav_isr() __interrupt SUDAV_ISR {
  // if the vendor command is a custom vendor
  // command for our firmware, make sure we
  // cancel any pending reads/writes etc, to 
@@ -135,20 +135,20 @@ void sudav_isr() interrupt SUDAV_ISR {
  }
  CLEAR_SUDAV();
 }
-void usbreset_isr() interrupt USBRESET_ISR {
+void usbreset_isr() __interrupt USBRESET_ISR {
  in_packet_max=FULLSPD_EP6_SIZE;
  handle_hispeed(FALSE);
  printf ( "usb reset\n" );
  CLEAR_USBRESET();
 }
-void hispeed_isr() interrupt HISPEED_ISR {
+void hispeed_isr() __interrupt HISPEED_ISR {
  in_packet_max=HISPD_EP6_SIZE;
  handle_hispeed(TRUE);
  printf ( "usb_hispeed\n" );
  CLEAR_HISPEED();
 }
 
-void suspend_isr() interrupt SUSPEND_ISR {
+void suspend_isr() __interrupt SUSPEND_ISR {
  dosuspend=TRUE;
  CLEAR_SUSPEND();
 }

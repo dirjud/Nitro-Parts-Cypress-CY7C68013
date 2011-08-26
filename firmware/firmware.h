@@ -40,8 +40,8 @@
 void reset_endpoints();
 
 
-extern volatile xdata WORD in_packet_max;
-extern volatile bit new_vc_cmd;
+extern volatile __xdata WORD in_packet_max;
+extern volatile __bit new_vc_cmd;
 
 
 #define HISPD_EP6_SIZE 512

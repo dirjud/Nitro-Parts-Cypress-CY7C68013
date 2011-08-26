@@ -24,7 +24,7 @@
 /**
  * io_handler for getting fx2 registers
  **/
-void get_fx2();
+void get_fx2( WORD len );
 
 /**
  * io_handler for setting fx2 registers
@@ -37,7 +37,7 @@ BOOL set_fx2();
 /**
  * Get the value from an FX2 SFR. 
  **/
-void get_fx2_sfr();
+void get_fx2_sfr( WORD len );
 /**
  * Set an FX2 SFR 
  **/
