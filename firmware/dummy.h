@@ -24,9 +24,12 @@
 #ifndef DUMMY_TERMINALS_H
 #define DUMMY_TERMINALS_H
 
-#include <fx2types.h>
-
+#include <handlers.h>
 void dummy_reader(WORD len);
 BOOL dummy_writer();
+
+#define DECLARE_DUMMY_HANDLER(term) \
+    DECLARE_HANDLER(term,0,0,dummy_reader,dummy_writer,0,0,0)
+
 
 #endif
