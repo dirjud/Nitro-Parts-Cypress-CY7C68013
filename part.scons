@@ -1,0 +1,8 @@
+Import('env')
+xml=env.Diconv( 'CY7C68013.xml' ,'terminals.py')
+env.DIDepends(xml, 'Microchip/M24XX/M24XX.xml')
+env.Xml(xml)
+
+env.Py('Cypress/CY7C68013',Glob('py/CY7C68013/*'))
+
+
