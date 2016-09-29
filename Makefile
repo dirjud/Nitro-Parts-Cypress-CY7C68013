@@ -1,5 +1,2 @@
+include ../../lib/Makefiles/project.mk
 
-
-
-CY7C68013.xml: terminals.py
-	diconv terminals.py $@ 
